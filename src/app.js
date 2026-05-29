@@ -1,6 +1,10 @@
 import express from "express";
+// import authRoute from "./";
 
-const app = express()
+const app = express();
 
+app.use(express.json());
 
-export default app
+// app.use("/api/auth", authRoute);
+
+export default app;
