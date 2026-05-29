@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
 import authRoute from "./routes/auth.route.js";
+import productRoute from "./routes/product.route.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get("/", (_, res) => {
 
 // routes
 app.use("/api/auth", authRoute);
+app.use("/api/products", productRoute);
 
 // global error handler
 app.use((err, _, res, __) => {

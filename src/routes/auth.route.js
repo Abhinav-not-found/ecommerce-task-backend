@@ -4,6 +4,11 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+// health check
+router.get("/check", (_, res) => {
+	res.send("Auth route is working");
+});
+
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", authMiddleware, logout);
