@@ -1,6 +1,6 @@
 import { body, matchedData, validationResult } from "express-validator";
 
-import { ApiError } from "../utils/apiError.js";
+import ApiError from "../utils/apiError.js";
 
 export const registerValidator = async (req) => {
 	await body("name").trim().notEmpty().withMessage("Name is required").run(req);
@@ -21,7 +21,7 @@ export const registerValidator = async (req) => {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		throw new ApiError(400, "Validation failed", errors.array());
+		throw new ApiError(400, "Validation failed");
 	}
 
 	return matchedData(req);

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
-const authModel = mongoose.Schema({
+const authSchema = mongoose.Schema({
 	name: {
 		type: String,
 		required: [true, "name is required"],
@@ -27,17 +27,17 @@ const authModel = mongoose.Schema({
 });
 
 // automatically hash the password
-authModel.pre("save", function () {
+authSchema.pre("save", function () {
 	if (!this.isModified("password")) return; // skip hashing if the password is not modified
 	this.password = bcrypt.hashSync(this.password, 10);
 });
 
 // method used to compare given password with this password(database)
-userSchema.methods.comparePassword = function (password) {
+authSchema.methods.comparePassword = function (password) {
 	if (!this.password) return false;
 	return bcrypt.compareSync(password, this.password);
 };
 
-const Auth = mongoose.model("Auth", authModel);
+const Auth = mongoose.model("Auth", authSchema);
 
 export default Auth;
