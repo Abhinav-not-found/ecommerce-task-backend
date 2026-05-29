@@ -1,5 +1,10 @@
+import chalk from "chalk";
 import app from "./src/app.js";
+import config from "./src/config/config.js";
 
-app.listen(3000, () => {
-	console.log("Server started on port: 3000");
-});
+const startServer = () => {
+	app.listen(config.port, () => {
+		console.log(chalk.bgCyan(`Server started on port: ${config.port}`));
+	});
+};
+startServer();
