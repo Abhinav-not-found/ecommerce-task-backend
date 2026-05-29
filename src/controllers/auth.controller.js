@@ -57,7 +57,7 @@ export const login = asyncHandler(async (req, res) => {
 	return res.status(200).json(new ApiResponse(200, "User loggedIn", safeUser));
 });
 
-export const logout = asyncHandler(async (req, res) => {
+export const logout = asyncHandler(async (_, res) => {
 	res.clearCookie("token", cookieOptions);
 	res.status(200).json(new ApiResponse(200, "User logged out"));
 });
