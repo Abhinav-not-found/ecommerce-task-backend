@@ -2,6 +2,7 @@ import express from "express";
 import authRoute from "./routes/auth.route.js";
 
 const app = express();
+
 //middlewares
 app.use(express.json());
 
