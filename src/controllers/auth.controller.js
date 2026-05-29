@@ -3,7 +3,7 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import cookieOptions from "../utils/cookie.js";
-import createToken from "../utils/token.js";
+import { createToken } from "../utils/token.js";
 import {
 	loginValidator,
 	registerValidator,
@@ -14,7 +14,7 @@ export const register = asyncHandler(async (req, res) => {
 
 	//check if email already exist
 	const checkUserAlreadyExist = await findByEmail(validatedData.email);
-	if (checkUserAlreadyExist) throw new ApiError(400, "Email already exist");
+	if (checkUserAlreadyExist) throw new ApiError(409, "Email already exist");
 
 	// password hashing is automatically done in model using .pre()
 
@@ -27,7 +27,7 @@ export const register = asyncHandler(async (req, res) => {
 	// set cookies
 	res.cookie("token", token, cookieOptions);
 
-	const safeUser = user.toObject;
+	const safeUser = user.toObject();
 	delete safeUser.password;
 
 	return res
@@ -40,10 +40,10 @@ export const login = asyncHandler(async (req, res) => {
 
 	//check email
 	const user = await findByEmail(validatedData.email);
-	if (!user) throw new ApiError(400, "Invalid credentials");
+	if (!user) throw new ApiError(401, "Invalid credentials");
 
 	const verifyPassword = user.comparePassword(validatedData.password);
-	if (!verifyPassword) throw new ApiError(400, "Invalid password");
+	if (!verifyPassword) throw new ApiError(401, "Invalid credentials");
 
 	// create token
 	const token = createToken(user._id);

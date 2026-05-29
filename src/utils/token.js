@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
-const createToken = (id) => {
+export const createToken = (id) => {
 	return jwt.sign({ id: id }, config.jwt_secret, {
 		expiresIn: "1h",
 	});
 };
 
-export default createToken;
+export const verifyToken = (token) => {
+	return jwt.verify(token, config.jwt_secret);
+};
