@@ -11,6 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 // health check
 app.get("/", (_, res) => {

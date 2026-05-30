@@ -36,9 +36,20 @@ export const getProductById = asyncHandler(async (req, res) => {
 });
 
 export const createNewProduct = asyncHandler(async (req, res) => {
+	//upload images to imagekit.io
+	const uploadedFiles = await Promise.all(
+		req.files.map((file) => sendFiles(file.buffer, file.originalname)),
+	);
+
+	// getting all the urls
+	const imageUrls = uploadedFiles.map((file) => file.url);
+
 	const validatedData = await createProductValidator(req);
 
-	const newProduct = await createProduct(validatedData);
+	const newProduct = await createProduct({
+		...validatedData,
+		images: imageUrls,
+	});
 
 	return res
 		.status(201)
@@ -49,7 +60,22 @@ export const updateProduct = asyncHandler(async (req, res) => {
 	const validatedData = await updateProductValidator(req);
 	const { id } = req.params;
 
-	const updatedProduct = await findAndUpdate(id, validatedData);
+	let imageUrls = [];
+
+	// if we have image-files then, upload image to imagekit.io
+	if (req.files?.length) {
+		const uploadedFiles = await Promise.all(
+			req.files.map((file) => sendFiles(file.buffer, file.originalname)),
+		);
+
+		imageUrls = uploadedFiles.map((file) => file.url);
+	}
+
+	// only add images if we have image-files
+	const updatedProduct = await findAndUpdate(id, {
+		...validatedData,
+		...(imageUrls.length && { images: imageUrls }),
+	});
 
 	if (!updatedProduct) throw new ApiError(404, "Product not found");
 
