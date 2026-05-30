@@ -1,17 +1,38 @@
 # Ecommerce Backend API
 
-A RESTful Ecommerce Backend built with:
 
-* Express.js
-* MongoDB
-* Mongoose
-* JWT Authentication
-* Cookie-based Auth
-* Multer
-* ImageKit
-* Express Validator
+A RESTful Ecommerce backend built with Express.js, MongoDB, JWT authentication, ImageKit image uploads, and cookie-based authentication.
+
+## Features
+
+- User Registration
+- User Login
+- User Logout
+- JWT Authentication
+- Cookie-based Authentication
+- Product CRUD
+- Product Image Uploads
+- Product Filtering by Category
+- Input Validation
+- Global Error Handling
 
 ---
+
+## Folder Structure
+
+```text
+src/
+├── config/
+├── controllers/
+├── dao/
+├── middlewares/
+├── models/
+├── routes/
+├── services/
+├── utils/
+├── validators/
+└── app.js
+```
 
 # Base URL
 
