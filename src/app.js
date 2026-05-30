@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 import morgan from "morgan";
+import errorHandler from "./middlewares/errorHandler.js";
 import authRoute from "./routes/auth.route.js";
 import productRoute from "./routes/product.route.js";
 
@@ -21,13 +22,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", productRoute);
 
 // global error handler
-app.use((err, _, res, __) => {
-	const statusCode = err.statusCode || 500;
-	const errorMessage = err.message || "Internal server error";
-
-	return res.status(statusCode).json({
-		message: errorMessage,
-	});
-});
+app.use(errorHandler);
 
 export default app;
