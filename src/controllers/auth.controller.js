@@ -1,28 +1,10 @@
-import { createNewUser, findByEmail } from "../dao/auth.dao.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-import ApiError from "../utils/apiError.js";
+import { loginService, registerService } from "../services/auth.service.js";
 import ApiResponse from "../utils/apiResponse.js";
 import cookieOptions from "../utils/cookie.js";
-import { createToken } from "../utils/token.js";
-import {
-	loginValidator,
-	registerValidator,
-} from "../validators/auth.validator.js";
 
 export const register = asyncHandler(async (req, res) => {
-	const validatedData = await registerValidator(req);
-
-	//check if email already exist
-	const checkUserAlreadyExist = await findByEmail(validatedData.email);
-	if (checkUserAlreadyExist) throw new ApiError(409, "Email already exist");
-
-	// password hashing is automatically done in model using .pre()
-
-	// make new user
-	const user = await createNewUser(validatedData);
-
-	// create token
-	const token = createToken(user._id);
+	const { token, user } = await registerService(req);
 
 	// set cookies
 	res.cookie("token", token, cookieOptions);
@@ -36,18 +18,7 @@ export const register = asyncHandler(async (req, res) => {
 });
 
 export const login = asyncHandler(async (req, res) => {
-	const validatedData = await loginValidator(req);
-
-	//check email
-	const user = await findByEmail(validatedData.email);
-	if (!user) throw new ApiError(401, "Invalid credentials");
-
-	const verifyPassword = user.comparePassword(validatedData.password);
-	if (!verifyPassword) throw new ApiError(401, "Invalid credentials");
-
-	// create token
-	const token = createToken(user._id);
-
+	const { token, user } = await loginService(req);
 	// set cookies
 	res.cookie("token", token, cookieOptions);
 
