@@ -1,5 +1,11 @@
+import {
+	createProduct,
+	findAllProduct,
+	findAndDelete,
+	findAndUpdate,
+	findProductById,
+} from "../dao/product.dao.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-import Product from "../models/product.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import {
@@ -9,7 +15,7 @@ import {
 } from "../validators/product.validator.js";
 
 export const getAllProducts = asyncHandler(async (_, res) => {
-	const products = await Product.find({});
+	const products = await findAllProduct();
 
 	return res
 		.status(200)
@@ -21,7 +27,7 @@ export const getProductById = asyncHandler(async (req, res) => {
 
 	const { id } = req.params;
 
-	const product = await Product.findById(id);
+	const product = await findProductById(id);
 	if (!product) throw new ApiError(404, "Product not found");
 
 	return res
@@ -32,7 +38,7 @@ export const getProductById = asyncHandler(async (req, res) => {
 export const createNewProduct = asyncHandler(async (req, res) => {
 	const validatedData = await createProductValidator(req);
 
-	const newProduct = await Product.create(validatedData);
+	const newProduct = await createProduct(validatedData);
 
 	return res
 		.status(201)
@@ -43,10 +49,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
 	const validatedData = await updateProductValidator(req);
 	const { id } = req.params;
 
-	const updatedProduct = await Product.findByIdAndUpdate(id, validatedData, {
-		new: true,
-		runValidators: true,
-	});
+	const updatedProduct = await findAndUpdate(id, validatedData);
 
 	if (!updatedProduct) throw new ApiError(404, "Product not found");
 
@@ -60,7 +63,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 
 	const { id } = req.params;
 
-	const deletedProduct = await Product.findByIdAndDelete(id);
+	const deletedProduct = await findAndDelete(id);
 
 	if (!deletedProduct) throw new ApiError(404, "Product not found");
 
