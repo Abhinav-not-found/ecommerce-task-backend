@@ -19,7 +19,7 @@ router.get("/", getAllProducts);
 router.get("/:id", getProductById);
 
 router.post("/", authMiddleware, createNewProduct);
-router.put("/:id", updateProduct);
+router.put("/:id", authMiddleware, updateProduct);
 router.delete("/:id", authMiddleware, deleteProduct);
 
 export default router;

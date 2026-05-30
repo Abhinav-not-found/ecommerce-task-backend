@@ -2,6 +2,11 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/product.model.js";
 import ApiError from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
+import {
+	createProductValidator,
+	productIdOnlyValidator,
+	updateProductValidator,
+} from "../validators/product.validator.js";
 
 export const getAllProducts = asyncHandler(async (_, res) => {
 	const products = await Product.find({});
@@ -12,6 +17,8 @@ export const getAllProducts = asyncHandler(async (_, res) => {
 });
 
 export const getProductById = asyncHandler(async (req, res) => {
+	await productIdOnlyValidator(req);
+
 	const { id } = req.params;
 
 	const product = await Product.findById(id);
@@ -23,15 +30,9 @@ export const getProductById = asyncHandler(async (req, res) => {
 });
 
 export const createNewProduct = asyncHandler(async (req, res) => {
-	const { name, description, price, category, images } = req.body;
+	const validatedData = await createProductValidator(req);
 
-	const newProduct = await Product.create({
-		name,
-		description,
-		price,
-		category,
-		images,
-	});
+	const newProduct = await Product.create(validatedData);
 
 	return res
 		.status(201)
@@ -39,24 +40,15 @@ export const createNewProduct = asyncHandler(async (req, res) => {
 });
 
 export const updateProduct = asyncHandler(async (req, res) => {
-	const { name, description, price, category, images } = req.body;
+	const validatedData = await updateProductValidator(req);
 	const { id } = req.params;
 
-	const updatedProduct = await Product.findByIdAndUpdate(
-		id,
-		{
-			name,
-			description,
-			price,
-			category,
-			images,
-		},
-		{ new: true },
-	);
+	const updatedProduct = await Product.findByIdAndUpdate(id, validatedData, {
+		new: true,
+		runValidators: true,
+	});
 
-	if (!updatedProduct) {
-		throw new ApiError(404, "Product not found");
-	}
+	if (!updatedProduct) throw new ApiError(404, "Product not found");
 
 	return res
 		.status(200)
@@ -64,13 +56,13 @@ export const updateProduct = asyncHandler(async (req, res) => {
 });
 
 export const deleteProduct = asyncHandler(async (req, res) => {
+	await productIdOnlyValidator(req);
+
 	const { id } = req.params;
 
 	const deletedProduct = await Product.findByIdAndDelete(id);
 
-	if (!deletedProduct) {
-		throw new ApiError(404, "Product not found");
-	}
+	if (!deletedProduct) throw new ApiError(404, "Product not found");
 
 	return res.status(200).json(new ApiResponse(200, "Product deleted"));
 });

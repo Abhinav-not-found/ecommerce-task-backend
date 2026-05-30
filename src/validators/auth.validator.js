@@ -21,7 +21,7 @@ export const registerValidator = async (req) => {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		throw new ApiError(400, "Validation failed");
+		throw new ApiError(400, errors.array()[0].msg);
 	}
 
 	return matchedData(req);
