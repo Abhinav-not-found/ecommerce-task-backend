@@ -1,5 +1,5 @@
 import ImageKit from "imagekit";
-import config from "./config";
+import config from "./config.js";
 
 const storageInstance = new ImageKit({
 	urlEndpoint: config.imagekit_url_endpoint,

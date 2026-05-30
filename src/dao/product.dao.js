@@ -1,7 +1,11 @@
 import Product from "../models/product.model.js";
 
-export const findAllProduct = () => {
-	return Product.find({});
+export const findAllProduct = (query) => {
+	const filter = {};
+	if (query.category) {
+		filter.category = query.category;
+	}
+	return Product.find(filter);
 };
 
 export const findProductById = (id) => {
@@ -19,6 +23,6 @@ export const findAndUpdate = (id, data) => {
 	});
 };
 
-export const findAndDelete = (id)=>{
-  return Product.findByIdAndDelete(id);
-}
+export const findAndDelete = (id) => {
+	return Product.findByIdAndDelete(id);
+};

@@ -1,3 +1,4 @@
+import sendFiles from "../config/imagekit.js";
 import {
 	createProduct,
 	findAllProduct,
@@ -14,8 +15,8 @@ import {
 	updateProductValidator,
 } from "../validators/product.validator.js";
 
-export const getAllProducts = asyncHandler(async (_, res) => {
-	const products = await findAllProduct();
+export const getAllProducts = asyncHandler(async (req, res) => {
+	const products = await findAllProduct(req.query);
 
 	return res
 		.status(200)
